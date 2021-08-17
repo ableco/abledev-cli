@@ -1,0 +1,30 @@
+{
+  "name": "__componentName__",
+  "version": "0.0.1",
+  "author": "Abledev",
+  "main": "dist/__componentName__.web",
+  "license": "MIT",
+  "types": "dist/src/index.d.ts",
+  "files": [
+    "dist",
+    "lib"
+  ],
+  "exports": {
+    ".": "./dist/__componentName__.web.js",
+    "./server-functions": "./dist/__componentName__.node.js",
+    "./styles.css": "./dist/main.css"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "dev": "ts-node ./abledev/devServer.ts",
+    "build-backend-functions": "build-backend-functions --source-folder-path=${PWD}/src --backend-functions-path=${PWD}/abledev/backend-functions",
+    "build": "npm run build-backend-functions && webpack -c webpack.config.build.ts"
+  },
+  "peerDependencies": {
+    "react": ">=16"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

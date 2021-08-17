@@ -1,0 +1,39 @@
+{
+  "name": "@ableco/abledev-cli",
+  "version": "0.0.1-alpha0",
+  "description": "",
+  "main": "dist/abledev-cli.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "abledev": "node ./dist/abledev-cli.js",
+    "watch": "webpack --watch",
+    "build": "webpack",
+    "test": "jest"
+  },
+  "bin": {
+    "abledev": "./dist/abledev-cli.js"
+  },
+  "author": "Julio García",
+  "license": "ISC",
+  "dependencies": {
+    "@types/commander": "^2.12.2",
+    "@types/yargs": "^17.0.2",
+    "commander": "^8.1.0",
+    "make-dir": "^3.1.0",
+    "yargs": "^17.1.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.1",
+    "@types/webpack-node-externals": "^2.5.2",
+    "jest": "^27.0.6",
+    "shebang-loader": "^0.0.1",
+    "ts-jest": "^27.0.4",
+    "ts-loader": "^9.2.5",
+    "ts-node": "^10.2.0",
+    "tslib": "^2.3.1",
+    "typescript": "^4.3.5",
+    "webpack": "^5.50.0",
+    "webpack-cli": "^4.8.0",
+    "webpack-node-externals": "^3.0.0"
+  }
+}
