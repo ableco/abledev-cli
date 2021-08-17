@@ -1,6 +1,6 @@
+import fs from "fs/promises";
 import makeDir from "make-dir";
 import path from "path";
-import fs from "fs/promises";
 
 type CreateFilesConfig = {
   rootPath: string;

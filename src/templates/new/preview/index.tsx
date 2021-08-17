@@ -1,5 +1,4 @@
 // @ts-nocheck
-import setDate from "date-fns/setDate";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import superjson from "superjson";
@@ -15,7 +14,7 @@ function PreviewApp() {
     const responseData = await response.text();
     setData(superjson.parse(responseData));
     setIsLoading(false);
-  }, [setDate, setIsLoading]);
+  }, [setData, setIsLoading]);
 
   React.useEffect(() => {
     loadData();
