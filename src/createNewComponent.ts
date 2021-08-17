@@ -1,6 +1,8 @@
 import { execSync } from "child_process";
 import fs from "fs";
+import fsPromises from "fs/promises";
 import makeDir from "make-dir";
+import path from "path";
 import createFiles from "./createFiles";
 
 async function createNewComponent(
@@ -12,33 +14,78 @@ async function createNewComponent(
     throw new Error(`This folder already exists: ${rootPath}`);
   }
   await createNewComponentFiles(componentName, rootPath);
-  await runPostInstallTasks(rootPath);
-  // TODO: Add and install dependencies
-  // TODO: Add Prisma
+  await runPostInstallTasks(componentName, rootPath);
 }
 
-async function runPostInstallTasks(rootPath: string) {
-  const originalCwd = process.cwd();
-  process.chdir(rootPath);
-  installDependencies();
-  initializePrisma();
-  process.chdir(originalCwd);
+async function runPostInstallTasks(componentName: string, rootPath: string) {
+  installDependencies(rootPath);
+  initializePrisma(rootPath, componentName);
 }
 
-function installDependencies() {
-  // TODO: Show the output of these calls
-  execSync(
-    "npm install -D ts-node typescript webpack-cli webpack ts-loader react react-dom @types/react type-fest @types/react-dom @types/express prisma",
+const DEPENDENCIES = [
+  "@ableco/abledev-dev-environment",
+  "@ableco/abledev-react",
+  "express",
+].join(" ");
+
+const DEV_DEPENDENCIES = [
+  "webpack",
+  "webpack-cli",
+  "ts-loader",
+  "ts-node",
+  "typescript",
+  "type-fest",
+  "react",
+  "@types/react",
+  "react-dom",
+  "@types/react-dom",
+  "prisma",
+  "@types/express",
+].join(" ");
+
+function installDependencies(rootPath: string) {
+  const npmFlags = "--registry=https://registry.able.co";
+
+  execCommand(rootPath, `npm install ${DEPENDENCIES} ${npmFlags}`);
+  execCommand(rootPath, `npm install -D ${DEV_DEPENDENCIES} ${npmFlags}`);
+}
+
+function execCommand(rootPath: string, command: string) {
+  execSync(command, {
+    stdio: ["inherit", "inherit", "inherit"],
+    cwd: rootPath,
+  });
+}
+
+async function initializePrisma(rootPath: string, componentName: string) {
+  execCommand(rootPath, "npx prisma init");
+  await updateDatabaseUrl(rootPath, componentName);
+  await createDummyModel(rootPath);
+  execCommand(rootPath, "npx prisma migrate dev --name initial");
+}
+
+async function updateDatabaseUrl(rootPath: string, componentName: string) {
+  const databaseName = `abledev_${componentName}`;
+  const user = execSync("whoami").toString().trim();
+  const code = `DATABASE_URL="postgresql://${user}@localhost:5432/${databaseName}"\n`;
+
+  createDatabase(rootPath, user, databaseName);
+  await fsPromises.writeFile(path.join(rootPath, ".env"), code);
+}
+
+function createDatabase(rootPath: string, user: string, databaseName: string) {
+  const command = `psql -U ${user} -tc "SELECT 1 FROM pg_database WHERE datname = '${databaseName}';" | grep -q 1 || psql -U ${user} -c "CREATE DATABASE ${databaseName};"`;
+  execCommand(rootPath, command);
+}
+
+async function createDummyModel(rootPath: string) {
+  const code = `model Dummy {
+  id Int @id @default(autoincrement())
+}`;
+  await fsPromises.appendFile(
+    path.join(rootPath, "prisma", "schema.prisma"),
+    code,
   );
-  execSync(
-    "npm install --registry=https://registry.able.co @ableco/abledev-dev-environment @ableco/abledev-react express ",
-  );
-}
-
-function initializePrisma() {
-  // TODO: Show the output of these calls
-  execSync("npx prisma init");
-  // TODO: Add dummy prisma model so prisma generate can generate the prisma client
 }
 
 async function createNewComponentFiles(
@@ -65,6 +112,7 @@ async function createNewComponentFiles(
       "src/index.tsx": true,
       [`src/${componentName}.tsx`]: "src/Component.tsx",
       "src/HostContext.ts": true,
+      "src/queries/getData.ts": true,
       "abledev/devServer.ts": true,
       "abledev/createHandleRequest.ts": true,
       "abledev/backend-functions/index.ts": true,
