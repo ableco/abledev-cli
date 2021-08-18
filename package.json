@@ -1,6 +1,6 @@
 {
   "name": "@ableco/abledev-cli",
-  "version": "0.0.1-alpha0",
+  "version": "0.0.1-alpha1",
   "description": "",
   "main": "dist/abledev-cli.js",
   "types": "dist/index.d.ts",
