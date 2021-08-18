@@ -9,7 +9,7 @@ describe("abledev new <componentName>", () => {
     runCommand(cli, "new", "MyComponent", `--path=${path}`, "--override");
 
     process.chdir(path);
-    runCommand("yarn run dev");
+    runCommand("npm run build");
   });
 });
 
@@ -21,6 +21,11 @@ async function setup() {
   const tmpDir = await fs.mkdtemp(
     path.join(os.tmpdir(), "abledev-isolated-component-"),
   );
+  // Drop a possible database
+  try {
+    runCommand(`dropdb abledev_MyComponent`);
+  } catch {}
+
   return { path: tmpDir, cli };
 }
 
@@ -31,5 +36,5 @@ async function compileLibrary(cliPath: string) {
 
 function runCommand(command: string, ...args: Array<string>) {
   const fullCommand = `${command} ${args.join(" ")}`;
-  execSync(fullCommand);
+  execSync(fullCommand, { stdio: ["inherit", "inherit", "inherit"] });
 }

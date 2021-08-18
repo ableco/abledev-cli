@@ -1,2 +1,2 @@
 // @ts-nocheck
-export { default as DueDate } from "./__componentName__";
+export { default as __componentName__ } from "./__componentName__";

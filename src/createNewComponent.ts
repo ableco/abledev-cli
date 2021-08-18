@@ -68,7 +68,7 @@ async function updateDatabaseUrl(rootPath: string, componentName: string) {
 }
 
 function createDatabase(rootPath: string, user: string, databaseName: string) {
-  const command = `psql -U ${user} -tc "SELECT 1 FROM pg_database WHERE datname = '${databaseName}';" | grep -q 1 || psql -U ${user} -c "CREATE DATABASE ${databaseName};"`;
+  const command = `psql -U ${user} -tc "SELECT 1 FROM pg_database WHERE datname ILIKE '${databaseName}';" | grep -q 1 || psql -U ${user} -c "CREATE DATABASE ${databaseName};"`;
   execCommand(rootPath, command);
 }
 
