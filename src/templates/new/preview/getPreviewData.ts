@@ -1,8 +1,8 @@
 // @ts-nocheck
 import { AsyncReturnType } from "type-fest";
-import { HostContext } from "../src/HostContext";
+import { HostContextType } from "../src/HostContext";
 
-async function getPreviewData({ db: _db }: HostContext) {
+async function getPreviewData({ db: _db }: HostContextType) {
   return {};
 }
 

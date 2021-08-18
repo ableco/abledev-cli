@@ -4,6 +4,7 @@ import fsPromises from "fs/promises";
 import makeDir from "make-dir";
 import path from "path";
 import createFiles from "./createFiles";
+import { execCommand } from "./execCommand";
 
 async function createNewComponent(
   componentName: string,
@@ -48,13 +49,6 @@ function installDependencies(rootPath: string) {
 
   execCommand(rootPath, `npm install ${DEPENDENCIES} ${npmFlags}`);
   execCommand(rootPath, `npm install -D ${DEV_DEPENDENCIES} ${npmFlags}`);
-}
-
-function execCommand(rootPath: string, command: string) {
-  execSync(command, {
-    stdio: ["inherit", "inherit", "inherit"],
-    cwd: rootPath,
-  });
 }
 
 async function initializePrisma(rootPath: string, componentName: string) {

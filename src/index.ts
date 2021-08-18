@@ -3,6 +3,7 @@ import { Command } from "commander";
 import path from "path";
 import createNewComponent from "./createNewComponent";
 import sanitizeComponentName from "./sanitizeComponentName";
+import startDevServer from "./startDevServer";
 
 const program = new Command("abledev");
 
@@ -21,5 +22,9 @@ program
       await createNewComponent(componentName, directoryPath, override);
     },
   );
+
+program.command("start").action(async () => {
+  startDevServer({ projectRoot: process.cwd() });
+});
 
 program.parse(process.argv);
