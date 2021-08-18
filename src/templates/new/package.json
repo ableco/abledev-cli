@@ -1,5 +1,5 @@
 {
-  "name": "__componentName__",
+  "name": "__packageJsonName__",
   "version": "0.0.1",
   "author": "Abledev",
   "main": "dist/__componentName__.web",
@@ -18,7 +18,7 @@
     "node": ">=10"
   },
   "scripts": {
-    "dev": "ts-node ./abledev/devServer.ts",
+    "start": "abledev start",
     "build-backend-functions": "build-backend-functions --source-folder-path=${PWD}/src --backend-functions-path=${PWD}/abledev/backend-functions",
     "build": "npm run build-backend-functions && webpack -c webpack.config.build.ts"
   },

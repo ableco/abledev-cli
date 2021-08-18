@@ -12,6 +12,8 @@ type FilesMap = {
   [location: string]: string | true;
 };
 
+const NO_TS_CHECK_LINE = "// @ts-nocheck\n";
+
 async function createFiles(
   { rootPath, templatesRoot, variables }: CreateFilesConfig,
   filesMap: FilesMap,
@@ -19,12 +21,9 @@ async function createFiles(
   for await (const [location, templatePathOrTrue] of Object.entries(filesMap)) {
     let templatePath =
       typeof templatePathOrTrue === "string" ? templatePathOrTrue : location;
-    let templateContent = await importFromTemplate(templatesRoot, templatePath);
-
-    const noTsCheckLine = "// @ts-nocheck\n";
-    if (templateContent.includes(noTsCheckLine)) {
-      templateContent = templateContent.replace(noTsCheckLine, "");
-    }
+    const templateContent = cleanNoTsCheckLine(
+      await importFromTemplate(templatesRoot, templatePath),
+    );
 
     const fullLocation = path.join(rootPath, location);
     const fullLocationDirectory = path.dirname(fullLocation);
@@ -34,6 +33,14 @@ async function createFiles(
       fullLocation,
       applyVariables(templateContent, variables),
     );
+  }
+}
+
+export function cleanNoTsCheckLine(content: string) {
+  if (content.includes(NO_TS_CHECK_LINE)) {
+    return content.replace(NO_TS_CHECK_LINE, "");
+  } else {
+    return content;
   }
 }
 
@@ -51,3 +58,4 @@ async function importFromTemplate(templatesRoot: string, templatePath: string) {
 }
 
 export default createFiles;
+export { applyVariables };

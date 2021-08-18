@@ -30,6 +30,7 @@ const DEPENDENCIES = [
 ].join(" ");
 
 const DEV_DEPENDENCIES = [
+  "@ableco/abledev-cli",
   "webpack",
   "webpack-cli",
   "ts-loader",
@@ -73,13 +74,22 @@ function createDatabase(rootPath: string, user: string, databaseName: string) {
 }
 
 async function createDummyModel(rootPath: string) {
-  const code = `model Dummy {
+  const code = `\nmodel Dummy {
   id Int @id @default(autoincrement())
 }`;
   await fsPromises.appendFile(
     path.join(rootPath, "prisma", "schema.prisma"),
     code,
   );
+}
+
+function lowercaseFirstCharacter(text: string) {
+  if (text.length >= 1) {
+    const [first, ...rest] = Array.from(text);
+    return [first.toLowerCase(), ...rest].join("");
+  } else {
+    return text;
+  }
 }
 
 async function createNewComponentFiles(
@@ -90,7 +100,10 @@ async function createNewComponentFiles(
     {
       rootPath: await makeDir(rootPath),
       templatesRoot: "./templates/new",
-      variables: { componentName },
+      variables: {
+        componentName,
+        packageJsonName: lowercaseFirstCharacter(componentName),
+      },
     },
     {
       "package.json": true,
