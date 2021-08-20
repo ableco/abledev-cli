@@ -22,3 +22,8 @@ folder:
 
 > `override` ignores an existing folder in the path location, so this can be
 > used many times to test something. If `override` is not added, we will error.
+
+### `abledev start`
+
+It basically runs `ts-node ./abledev/devServer.ts` from an isolated component.
+It will probably do more in the future but for now, this is enoguh.
